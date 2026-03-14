@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: pdfExtracter
+  datasource:
+    url: jdbc:mysql://localhost:3306/quiz_database?useSSL=false&serverTimezone=UTC
+    username: root
+    password: root123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+server:
+  port: 8081
+
+springdoc:
+  swagger-ui:
+    # Ensures the UI is enabled
+    enabled: true
+    # Use this to customize the path if needed (e.g., http://localhost:8081/swagger-ui.html)
+    path: /swagger-ui.html
+  api-docs:
+    # Ensures the OpenAPI backend is enabled
+    enabled: true

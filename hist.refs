@@ -1,0 +1,126 @@
+
+    public QuizQuestion generateQuestion(String text) {
+                                //        String prompt = """
+                                //You are a quiz generator. Generate exactly ONE multiple choice question.
+                                //
+                                //Use this EXACT format and nothing else:
+                                //
+                                //QUESTION: Write your question here
+                                //TYPE: MCQ
+                                //OPTIONS:
+                                //A) First option
+                                //B) Second option
+                                //C) Third option
+                                //D) Fourth option
+                                //ANSWER: C
+                                //
+                                //Rules:
+                                //- ANSWER must be a SINGLE letter only: A, B, C, or D
+                                //- No pipes (|), no explanations, no extra text
+                                //- All 4 options must be filled in
+                                //
+                                //CONTENT:
+                                //""" + text;
+        String prompt = """
+                You are a quiz generator. I will give you some content and you must create ONE question about it.
+
+                The content is: """ + text + """
+
+                Now write ONE question about that content.
+                Write it in this format:
+
+                QUESTION: [your question]
+                TYPE: MCQ
+                OPTIONS:
+                A) [wrong answer]
+                B) [wrong answer]
+                C) [correct answer]
+                D) [wrong answer]
+                ANSWER: C
+                Important: Replace everything in brackets with real content. ANSWER must be the single letter of the correct option.
+                """;
+        Map<String, Object> body = new HashMap<>();
+        body.put("model", "llama3.2:3b");
+        body.put("prompt", prompt);
+        body.put("stream", false);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+        ResponseEntity<Map> response = restTemplate.postForEntity(
+                "http://localhost:11434/api/generate",
+                request,
+                Map.class
+        );
+        System.out.println(response);
+        if (response.getBody() == null) {
+            return null;
+        }
+        String llmOutput = response.getBody().get("response").toString();
+        System.out.println("=== LLM RAW OUTPUT ===\n" + llmOutput + "\n======================");
+        return parseLLMResponse(llmOutput);
+    }
+    private QuizQuestion parseLLMResponse(String response) {
+        QuizQuestion q = new QuizQuestion();
+        List<String> options = new ArrayList<>();
+        String[] lines = response.split("\\n");
+        for (String line : lines) {
+            line = line.trim();
+            if (line.toUpperCase().startsWith("QUESTION:")) {
+                q.setQuestion(line.substring(line.indexOf(":") + 1).trim());
+            }
+            else if (line.toUpperCase().startsWith("TYPE:")) {
+                String type = line.substring(line.indexOf(":") + 1).trim();
+                q.setType(type);
+            }
+            else if (line.matches("^[A-Da-d][).].*")) {
+                // handles both "A)" and "A." formats
+                options.add(line.substring(2).trim());
+            }
+            else if (line.toUpperCase().startsWith("ANSWER:")) {
+                String ans = line.substring(line.indexOf(":") + 1).trim();
+                // Remove pipes and extra options e.g. "A | B | C | D" → "A"
+                if (ans.contains("|")) {
+                    ans = ans.split("\\|")[0].trim();
+                }
+                // Remove brackets/parens e.g. "A)" or "(A)"
+                ans = ans.replaceAll("[().]", "").trim();
+                if (!ans.isEmpty()) {
+                    char first = Character.toUpperCase(ans.charAt(0));
+                    if (first >= 'A' && first <= 'D') {
+                        ans = String.valueOf(first);
+                    }
+                }
+                q.setAnswer(ans);
+            }
+        }
+        // Fallback: if type is still null, default to MCQ
+        if (q.getType() == null || q.getType().isEmpty()) {
+            q.setType("MCQ");
+        }
+        q.setOptions(options);
+        return q;
+    }
+
+    =====================================================================================================
+    ========================================================================================================
+    ========================================================================================================
+        @PostMapping("/generate-quiz-llm")
+        public List<QuizQuestion> generateQuizLLM() throws JsonProcessingException {
+            List<ContentChunk> chunks = repo.findAll();
+            List<QuizQuestion> questions = new ArrayList<>();
+            int id = 1;
+            for(ContentChunk chunk : chunks){
+                String llmResponse = ollamaService.generateQuestion(chunk.getText());
+                QuizQuestion q = objectMapper.readValue(llmResponse, QuizQuestion.class);
+                q.setQuestionId("Q" + id);
+                q.setDifficulty("easy");
+                q.setSourceChunkId(chunk.getChunkId());
+                questions.add(q);
+                id++;
+            }
+            quizQuestionRepo.saveAll(questions);
+            return questions;
+        }
+        =====================================================================================================
+        ========================================================================================================
+        ========================================================================================================
