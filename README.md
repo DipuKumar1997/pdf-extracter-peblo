@@ -85,7 +85,7 @@ Steps:
 1. Clone the repository
 
 ```bash
-git clone https://github.com/DipuKumar1997/your-repository-name.git
+git clone https://github.com/DipuKumar1997/pdf-extracter-peblo.git
 ```
 
 2. Open the project in IntelliJ IDEA
