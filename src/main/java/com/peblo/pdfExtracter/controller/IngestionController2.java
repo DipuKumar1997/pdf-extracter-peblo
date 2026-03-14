@@ -123,9 +123,9 @@ public class IngestionController2 {
     }
     @GetMapping("/quiz")
     public List<QuizQuestion> getQuiz(
-            @RequestParam String topic,
+            @RequestParam String type,
             @RequestParam String difficulty) {
-        return quizQuestionRepo.findByTypeAndDifficulty (topic,difficulty);
+        return quizQuestionRepo.findByTypeAndDifficulty (type,difficulty);
     }
 
     @PostMapping("/generate-quiz-llmm")
