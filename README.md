@@ -133,7 +133,8 @@ You can use this interface to test all available endpoints.
 7. Access the generated questions through REST APIs
 
 ---
-Link of postman apis :- [https://ntelfic-bakcend-team.postman.co/workspace/Ecommerce~b04673f5-d060-4006-89d1-8ac1ccad4652/collection/40393803-91a40820-f9b1-4d86-88eb-f39bb766cb08?action=share&creator=40393803] 
+Link of postman apis :- [https://ntelfic-bakcend-team.postman.co/workspace/Ecommerce~b04673f5-d060-4006-89d1-8ac1ccad4652/collection/40393803-91a40820-f9b1-4d86-88eb-f39bb766cb08?action=share&creator=40393803]   
+
 Link of Demo video :- [https://drive.google.com/file/d/1QWiS_WtOeQPCPOg9NtU9RE59eVKJjgoO/view?usp=drive_link]
 ## Note
 
