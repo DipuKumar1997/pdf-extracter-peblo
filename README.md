@@ -2,7 +2,7 @@
 
 This repository contains my solution for the Peblo AI Backend Engineer Intern challenge.
 
-This repository might be made private in the future. If you came here from my resume or from another company, please visit the actual project on my GitHub profile.
+This repository might be made private in the future. If you came here by exploring, please visit the actual project on my GitHub profile.
 
 Profile Link:- https://github.com/DipuKumar1997
 
@@ -133,7 +133,7 @@ You can use this interface to test all available endpoints.
 7. Access the generated questions through REST APIs
 
 ---
-
+Link of postman apis :- [https://ntelfic-bakcend-team.postman.co/workspace/Ecommerce~b04673f5-d060-4006-89d1-8ac1ccad4652/collection/40393803-91a40820-f9b1-4d86-88eb-f39bb766cb08?action=share&creator=40393803] 
 ## Note
 
 This project was created as part of the Peblo AI Backend Engineer Intern challenge to demonstrate backend development, PDF processing, LLM integration using Ollama, and REST API design.
